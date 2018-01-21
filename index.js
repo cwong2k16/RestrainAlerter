@@ -11,14 +11,32 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
+var db = admin.firestore();
+
 app.get('/', (req, res)=>{
     res.render('./index');
 });
 
 app.post('/', (req, res)=>{
-    res.json(req.body);
+    if(req.body.Type === 'victim'){
+        console.log(req.body);
+        var docRef = db.collection('victim').doc(req.body.Name);
+        var setPerson = docRef.set({
+            name: req.body.Name,
+            type: req.body.Type,
+            summary: req.body.Summary,
+            ID: req.body.ID
+        });
+    }
+    else if(req.body.Type === 'abuser') {
+        var docRef = db.collection('abuser').doc(req.body.Name);
+        var setPerson = docRef.set({
+            name: req.body.Name,
+            type: req.body.Type,
+            summary: req.body.Summary,
+            ID: req.body.ID
+        });
+    } 
 });
 
-var db = admin.firestore();
-
-app.listen(3000);
+app.listen(3001);
