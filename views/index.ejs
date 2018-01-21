@@ -1,25 +1,43 @@
 <!DOCTYPE html>
 <html>
     <head>
+	<link rel="stylesheet" href="styles.css">
         <title>
             Enter Data
         </title>
     </head>
     <body>
-        <form method = "POST" action = "/">
-            <div>
-                <label value = 'Name'>Name</label>
-                <input type = 'text' name = 'Name' required></input>
-            </div>
-            <div>
-                <label value = 'Summary'>Summary</label>
-                <input type = 'text' name = 'Summary'></input>
-            </div> 
-            <div>
-                <label value = 'Type'>Type</label>
-                <input type = 'text' name = 'Type'></input>
-            </div>
-            <input type = 'submit'></button>
-        </form>
+<form method = "POST" action "/" class="form-style">
+<ul>
+<h1>Enter Information</h1>	
+<li>
+<label>Full Name <span class="required">*</span></label>
+<input type="text" name="firstName" class="field-name" placeholder="First" />&nbsp;<input type="text" name="lastName" class="field-name" placeholder="Last" /></li>
+    <li>
+        <label>Type</label>
+        <select name="Type" class="field-select">
+        <option value="Abuser">Abuser</option>
+        <option value="Victim">Victim</option>
+        </select>
+    </li>
+    <li>
+        <label>Distance<span class="required">*</span></label>
+        <input type="text" name="Distance" class="field-name" placeholder="Distance" />
+        </select>
+    </li>
+    <li>
+        <label>Other (ID)<span class="required">*</span></label>
+        <input type="text" name="Other" class="field-name" placeholder="Other(ID)" />
+        </select>
+    </li>
+    <li>
+        <label>Summary</label>
+        <textarea name="Summary" id="field4" class="field-textarea"></textarea>
+    </li>
+    <li>
+        <input type="submit" value="Submit" />
+    </li>
+</ul>
+</form>
     </body>
 </html>

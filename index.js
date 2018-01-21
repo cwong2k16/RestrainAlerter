@@ -3,10 +3,13 @@ const admin = require('firebase-admin');
 var body_parser = require('body-parser');
 var serviceAccount = require("./keys/serviceAccountKey.json");
 var fs = require('fs');
+var obj = {};
+var obj2 = {};
 
 var app = express();
 app.set('view engine', 'ejs');
 app.use(body_parser.urlencoded( { extended: false}));
+app.use(express.static('./public/assets'));
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -19,22 +22,27 @@ app.get('/', (req, res)=>{
 });
 
 app.post('/', (req, res)=>{
-    if(req.body.Type === 'victim' || req.body.Type === 'abuser'){
-        var readStream = fs.createReadStream(__dirname + '/id.txt', 'binary');
-        readStream.on('data', function(chunk){  
-            chunk = parseInt(chunk)+1;
-            chunk = chunk.toString();
-            var docRef = db.collection(req.body.Type).doc(chunk);
-            var setPerson = docRef.set({
-                name: req.body.Name,
-                type: req.body.Type,
-                summary: req.body.Summary,
-                ID: chunk
-            });
-            res.send(req.body.Name + ' of id: ' + chunk +  ' has been added to the database.');
-            var writeStream = fs.createWriteStream(__dirname + '/id.txt');
-            writeStream.write(chunk);
-         });
+    if(req.body.Type === 'Victim' || req.body.Type === 'Abuser'){
+        var Name = (req.body.firstName + ' ' + req.body.lastName);  
+        // var docRef = db.collection('users').add({
+        //     distance: req.body.Distance,
+        //     name: Name,
+        //     other: req.body.ID,
+        //     summary: req.body.Summary,
+        //     type: req.body.Type
+        // }).then(ref=>{
+        //     console.log("Added document with ID: ", ref.id);
+        // });
+        var docRef = db.collection(req.body.Type).doc(req.body.ID);
+        var setPerson = docRef.set({
+            distance: req.body.Distance,
+            name: Name,
+            other: req.body.ID,
+            type: req.body.Type,
+            summary: req.body.Summary,
+            ID: chunk
+        });
+        res.send(Name + ' of id: ' +  +  ' has been added to the database.');
     }
     else{
         res.send('Please enter a valid Type. Choices are: victim/abuser');
@@ -42,22 +50,28 @@ app.post('/', (req, res)=>{
 });
 
 app.get('/victims', (req, res)=>{
-    var obj = {};
-    db.collection('victim').get()
+    renderDisplay('Victim', req, res);
+    res.render('person', {data: obj, title: 'Victims'});
+});
+
+app.get('/abusers', (req, res)=>{
+    renderDisplay('Abuser', req, res);
+    res.render('person', {data: obj2, title: 'Abusers'});
+});
+
+function renderDisplay(type, req, res){
+    db.collection(type).get()
     .then((snapshot) => {
         snapshot.forEach((doc) => {
-            // console.log(doc.id, '=>', doc.data());
+            if(type === 'Victim')
             obj[doc.id] = doc.data();
+            if(type === 'Abuser')
+            obj2[doc.id] = doc.data();
         });
-        res.render('victims', {data: obj});
     })
     .catch((err) => {
         console.log('Error getting documents', err);
     });
-});
-
-app.get('/abusers', (req, res)=>{
-
-});
+}
 
 app.listen(3001);
