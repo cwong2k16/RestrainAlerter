@@ -3,8 +3,8 @@ const admin = require('firebase-admin');
 var body_parser = require('body-parser');
 var serviceAccount = require("./keys/serviceAccountKey.json");
 var fs = require('fs');
-var obj = {};
-var obj2 = {};
+var arr = [];
+var arr2 = [];
 
 var app = express();
 app.set('view engine', 'ejs');
@@ -40,26 +40,38 @@ app.post('/', (req, res)=>{
 });
 
 app.get('/victims', (req, res)=>{
-    renderDisplay('Victim', req, res);
-    res.render('Table', {data: obj, title: 'Victims'});
+    renderDisplay('victim', req, res);
+    res.render('people', {data: arr, title: 'Victims'});
+    arr = [];
 });
 
 app.get('/abusers', (req, res)=>{
-    renderDisplay('Abuser', req, res);
-    res.render('person', {data: obj2, title: 'Abusers'});
+    renderDisplay('abuser', req, res);
+    res.render('people', {data: arr2, title: 'Abusers'});
+    arr2 = [];
 });
 
 function renderDisplay(type, req, res){
     var usersRef = db.collection('users');
-    var query = usersRef.where('type', '==', "victim").get()
-        .then(snapshot => {
-            snapshot.forEach(doc => {
-                console.log(doc.id, '=>', doc.data());
-            });
-        })
-        .catch(err => {
-            console.log('Error getting documents', err);
+    var query = usersRef.where('type', '==', type).get()
+    .then(snapshot => {
+        snapshot.forEach(doc => {
+            // console.log(doc.id, '=>', doc.data());
+            if(type === 'victim'){
+                var obj = {};
+                obj[doc.id] = doc.data();
+                arr.push(obj);
+            }
+            else{
+                var obj2 = {};
+                obj2[doc.id] = doc.data();
+                arr2.push(obj2);
+            }
         });
+    })
+    .catch(err => {
+        console.log('Error getting documents', err);
+    });
 }
 
 app.listen(3001);

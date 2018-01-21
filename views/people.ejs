@@ -1,0 +1,47 @@
+<!-- @author: Jackie Wang -->
+
+<!DOCTYPE html>
+<html>
+    <head>
+	<link rel="stylesheet" href="styles.css">
+        <title>
+            Table of Data
+        </title>
+    </head>
+    <body>
+<ul>
+<table class="table-style">
+<h1><%= title %></h1>	
+  <tr>
+    <th>Name</th>
+    <th>Distance</th> 
+    <th>Other</th>
+	<th>ID</th>
+	<th>Type</th>
+	<th>Summary</th>
+  </tr>
+  <!-- <% for(var i = 0; i < data.length; i++){ %>
+  <tr>
+    <th><%= data %></th>
+    <th>50</th> 
+    <th>Knuckles</th>
+	<th>123</th>
+	<th>Abuser</th>
+    <th>Do you know the way</th>
+  </tr>
+  <% } %> -->
+<% for(var i = 0; i < data.length; i++){ %>
+    <tr>
+      <% for(key in data[i]){ %> 
+      <th><%= data[i][key].name %></th>
+      <th><%= data[i][key].distance %></th> 
+      <th><%= data[i][key].other %></th>
+      <th><%= key %></th>
+      <th><%= data[i][key].type %></th>
+      <th><%= data[i][key].summary %></th>
+      <% } %>
+    </tr>
+<% } %>
+</table>
+    </body>
+</html>
