@@ -42,11 +42,14 @@ app.post('/', (req, res)=>{
 });
 
 app.get('/victims', (req, res)=>{
-    db.collection('victims').get()
+    var obj = {};
+    db.collection('victim').get()
     .then((snapshot) => {
         snapshot.forEach((doc) => {
-            console.log(doc.id, '=>', doc.data());
+            // console.log(doc.id, '=>', doc.data());
+            obj[doc.id] = doc.data();
         });
+        res.render('victims', {data: obj});
     })
     .catch((err) => {
         console.log('Error getting documents', err);

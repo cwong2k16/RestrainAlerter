@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Victims
+        </title>
+    </head>
+    <body>
+        <div>
+        <% for(key in data){ %>
+            <div>
+                <%= key %> => 
+                <% for(key2 in data[key]){ %>
+                    <%= key2 %> ==> <%= data[key][key2] %> ... 
+                <% } %>
+            </div>
+            <% } %>
+        </div>
+    </body>
+</html>
