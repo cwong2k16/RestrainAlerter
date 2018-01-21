@@ -24,25 +24,15 @@ app.get('/', (req, res)=>{
 app.post('/', (req, res)=>{
     if(req.body.Type === 'Victim' || req.body.Type === 'Abuser'){
         var Name = (req.body.firstName + ' ' + req.body.lastName);  
-        // var docRef = db.collection('users').add({
-        //     distance: req.body.Distance,
-        //     name: Name,
-        //     other: req.body.ID,
-        //     summary: req.body.Summary,
-        //     type: req.body.Type
-        // }).then(ref=>{
-        //     console.log("Added document with ID: ", ref.id);
-        // });
-        var docRef = db.collection(req.body.Type).doc(req.body.ID);
+        var docRef = db.collection('users').doc(req.body.ID);
         var setPerson = docRef.set({
             distance: req.body.Distance,
             name: Name,
-            other: req.body.ID,
+            other: req.body.Other,
             type: req.body.Type,
             summary: req.body.Summary,
-            ID: chunk
         });
-        res.send(Name + ' of id: ' +  +  ' has been added to the database.');
+        res.send(Name + ' of id: ' + req.body.ID +  ' has been added to the database.');
     }
     else{
         res.send('Please enter a valid Type. Choices are: victim/abuser');
@@ -60,18 +50,16 @@ app.get('/abusers', (req, res)=>{
 });
 
 function renderDisplay(type, req, res){
-    db.collection(type).get()
-    .then((snapshot) => {
-        snapshot.forEach((doc) => {
-            if(type === 'Victim')
-            obj[doc.id] = doc.data();
-            if(type === 'Abuser')
-            obj2[doc.id] = doc.data();
+    var usersRef = db.collection('users');
+    var query = citiesRef.where('capital', '==', true).get()
+        .then(snapshot => {
+            snapshot.forEach(doc => {
+                console.log(doc.id, '=>', doc.data());
+            });
+        })
+        .catch(err => {
+            console.log('Error getting documents', err);
         });
-    })
-    .catch((err) => {
-        console.log('Error getting documents', err);
-    });
 }
 
 app.listen(3001);
