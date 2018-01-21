@@ -22,14 +22,14 @@ app.get('/', (req, res)=>{
 });
 
 app.post('/', (req, res)=>{
-    if(req.body.Type === 'Victim' || req.body.Type === 'Abuser'){
+    if(req.body.Type.toLowerCase() === 'victim' || req.body.Type.toLowerCase() === 'abuser'){
         var Name = (req.body.firstName + ' ' + req.body.lastName);  
         var docRef = db.collection('users').doc(req.body.ID);
         var setPerson = docRef.set({
             distance: req.body.Distance,
             name: Name,
             other: req.body.Other,
-            type: req.body.Type,
+            type: req.body.Type.toLowerCase(),
             summary: req.body.Summary,
         });
         res.send(Name + ' of id: ' + req.body.ID +  ' has been added to the database.');
@@ -41,7 +41,7 @@ app.post('/', (req, res)=>{
 
 app.get('/victims', (req, res)=>{
     renderDisplay('Victim', req, res);
-    res.render('person', {data: obj, title: 'Victims'});
+    res.render('Table', {data: obj, title: 'Victims'});
 });
 
 app.get('/abusers', (req, res)=>{
@@ -51,7 +51,7 @@ app.get('/abusers', (req, res)=>{
 
 function renderDisplay(type, req, res){
     var usersRef = db.collection('users');
-    var query = citiesRef.where('capital', '==', true).get()
+    var query = usersRef.where('type', '==', "victim").get()
         .then(snapshot => {
             snapshot.forEach(doc => {
                 console.log(doc.id, '=>', doc.data());

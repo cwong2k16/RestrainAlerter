@@ -1,4 +1,3 @@
-<style type="text/css">
 .form-style {
     margin:10px auto;
     max-width: 400px;
@@ -66,4 +65,20 @@ select{
 .form-style .required{
     color:red;
 }
-</style>
+.table-style {
+    width:100%
+  }
+  .table-style table{
+      border-collapse: collapse;
+  }
+  .table-style th, td{
+      padding: 0.5rem;
+  }
+  .table-style tr:first-child{
+      border: 1px solid #999;
+      background-color: #4286f4;
+  }
+  tbody tr:nth-child(odd) {
+    background: #eee;
+  }
+  
