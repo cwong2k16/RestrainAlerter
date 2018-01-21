@@ -2,6 +2,7 @@ var express = require('express');
 const admin = require('firebase-admin');
 var body_parser = require('body-parser');
 var serviceAccount = require("./keys/serviceAccountKey.json");
+var fs = require('fs');
 
 var app = express();
 app.set('view engine', 'ejs');
@@ -19,19 +20,41 @@ app.get('/', (req, res)=>{
 
 app.post('/', (req, res)=>{
     if(req.body.Type === 'victim' || req.body.Type === 'abuser'){
-        console.log(req.body);
-        var docRef = db.collection(req.body.Type).doc(req.body.Name);
-        var setPerson = docRef.set({
-            name: req.body.Name,
-            type: req.body.Type,
-            summary: req.body.Summary,
-            ID: req.body.ID
-        });
-        res.send(req.body.Name + ' has been added to the database');
+        var readStream = fs.createReadStream(__dirname + '/id.txt', 'binary');
+        readStream.on('data', function(chunk){  
+            chunk = parseInt(chunk)+1;
+            chunk = chunk.toString();
+            var docRef = db.collection(req.body.Type).doc(chunk);
+            var setPerson = docRef.set({
+                name: req.body.Name,
+                type: req.body.Type,
+                summary: req.body.Summary,
+                ID: chunk
+            });
+            res.send(req.body.Name + ' of id: ' + chunk +  ' has been added to the database.');
+            var writeStream = fs.createWriteStream(__dirname + '/id.txt');
+            writeStream.write(chunk);
+         });
     }
     else{
-        res.send('error');
+        res.send('Please enter a valid Type. Choices are: victim/abuser');
     } 
+});
+
+app.get('/victims', (req, res)=>{
+    db.collection('victims').get()
+    .then((snapshot) => {
+        snapshot.forEach((doc) => {
+            console.log(doc.id, '=>', doc.data());
+        });
+    })
+    .catch((err) => {
+        console.log('Error getting documents', err);
+    });
+});
+
+app.get('/abusers', (req, res)=>{
+
 });
 
 app.listen(3001);
