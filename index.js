@@ -18,24 +18,19 @@ app.get('/', (req, res)=>{
 });
 
 app.post('/', (req, res)=>{
-    if(req.body.Type === 'victim'){
+    if(req.body.Type === 'victim' || req.body.Type === 'abuser'){
         console.log(req.body);
-        var docRef = db.collection('victim').doc(req.body.Name);
+        var docRef = db.collection(req.body.Type).doc(req.body.Name);
         var setPerson = docRef.set({
             name: req.body.Name,
             type: req.body.Type,
             summary: req.body.Summary,
             ID: req.body.ID
         });
+        res.send(req.body.Name + ' has been added to the database');
     }
-    else if(req.body.Type === 'abuser') {
-        var docRef = db.collection('abuser').doc(req.body.Name);
-        var setPerson = docRef.set({
-            name: req.body.Name,
-            type: req.body.Type,
-            summary: req.body.Summary,
-            ID: req.body.ID
-        });
+    else{
+        res.send('error');
     } 
 });
 
